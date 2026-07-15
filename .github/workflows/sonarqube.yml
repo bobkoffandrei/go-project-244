@@ -33,5 +33,6 @@ jobs:
         with:
           args: >
             -Dsonar.projectKey=bobkoffandrei_go-project-244
+            -Dsonar.organization=bobkoffandrei
             -Dsonar.sources=.
             -Dsonar.verbose=true
