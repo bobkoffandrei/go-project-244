@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  pull-requests: read # allows SonarQube to decorate PRs with analysis results
+  pull-requests: read 
 
 jobs:
   Analysis:
@@ -25,7 +25,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Analyze with SonarQube
-        uses: SonarSource/sonarqube-scan-action@v6 # <-- ОБНОВЛЕНО ДО v6
+        uses: SonarSource/sonarqube-scan-action@v6 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

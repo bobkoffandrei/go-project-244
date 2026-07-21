@@ -41,8 +41,16 @@ func main() {
 
 			}
 
-			fileMap1, _ := parsing.ParseFile(c.Args().Get(0))
-			fileMap2, _ := parsing.ParseFile(c.Args().Get(1))
+			fileMap1, err := parsing.ParseFile(c.Args().Get(0))
+			if err != nil {
+				return err
+			}
+			
+			fileMap2, err := parsing.ParseFile(c.Args().Get(1))
+
+			if err != nil {
+				return err
+			}
 
 			fmt.Println(genDiff(fileMap1, fileMap2))
 
