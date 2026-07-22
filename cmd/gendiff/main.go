@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	//"reflect"
-	//"github.com/bobkoffandrei/go-project-244/code"
+	"path/filepath"
 	"github.com/urfave/cli/v3"
 	"os"
 	"sort"
 	"github.com/bobkoffandrei/go-project-244/cmd/parsing"
+	"github.com/bobkoffandrei/go-project-244/cmd/parsers"
 )
 
 
@@ -41,18 +41,44 @@ func main() {
 
 			}
 
-			fileMap1, err := parsing.ParseFile(c.Args().Get(0))
-			if err != nil {
-				return err
+			ext1 := filepath.Ext(c.Args().Get(0))
+			ext2 := filepath.Ext(c.Args().Get(1))
+
+			if ext1 == ".json" && ext2 == ".json" {
+
+				fileMap1, err := parsing.ParseFile(c.Args().Get(0))
+				if err != nil {
+					return err
+				}
+
+				fileMap2, err := parsing.ParseFile(c.Args().Get(1))
+				if err != nil {
+					return err
+				}
+
+				fmt.Println(genDiff(fileMap1, fileMap2))
+
 			}
+
+			if ext1 == ".yaml" && ext2 == ".yaml" || ext1 == ".yml" && ext2 == ".yml" {
+
+				fileMap1, err := parsers.ParseFile(c.Args().Get(0))
+				if err != nil {
+					return err
+				}
+
+				fileMap2, err := parsers.ParseFile(c.Args().Get(1))
+				if err != nil {
+					return err
+				}
+				fmt.Println(genDiff(fileMap1, fileMap2))
+			}
+
+			if ext1 != ext2 {
+				fmt.Println("Разные расширения файлов")
+			}
+
 			
-			fileMap2, err := parsing.ParseFile(c.Args().Get(1))
-
-			if err != nil {
-				return err
-			}
-
-			fmt.Println(genDiff(fileMap1, fileMap2))
 
 			return nil
 		},
@@ -104,5 +130,5 @@ func genDiff(map1, map2 map[string]any) string {
 		}
 		}
 
-	return result
+	return "{\n" + result + "}"
 }

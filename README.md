@@ -6,3 +6,5 @@
 [![test-lint](https://github.com/bobkoffandrei/go-project-244/actions/workflows/test-lint.yml/badge.svg)](https://github.com/bobkoffandrei/go-project-244/actions/workflows/test-lint.yml)
 
 https://asciinema.org/a/BoWJFR3H9iuZujR5
+
+https://asciinema.org/a/99eL1YW8ZaaxzAxi

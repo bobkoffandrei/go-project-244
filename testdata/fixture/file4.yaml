@@ -1,0 +1,4 @@
+timeout: 20
+verbose: false
+host: hexlet.io
+port: 8080
