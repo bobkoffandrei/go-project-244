@@ -9,6 +9,8 @@ import (
 	"sort"
 	"github.com/bobkoffandrei/go-project-244/cmd/parsing"
 	"github.com/bobkoffandrei/go-project-244/cmd/parsers"
+	"strings"
+	
 )
 
 
@@ -41,45 +43,52 @@ func main() {
 
 			}
 
+
+            file1 := c.Args().Get(0)
+			file2 := c.Args().Get(1)
+
 			ext1 := filepath.Ext(c.Args().Get(0))
 			ext2 := filepath.Ext(c.Args().Get(1))
 
+            var fileMap1, fileMap2 map[string]any
+
+            var err error
+
 			if ext1 == ".json" && ext2 == ".json" {
-
-				fileMap1, err := parsing.ParseFile(c.Args().Get(0))
+				fileMap1, err = parsing.ParseFile(file1)
 				if err != nil {
 					return err
 				}
-
-				fileMap2, err := parsing.ParseFile(c.Args().Get(1))
+				fileMap2, err = parsing.ParseFile(file2)
 				if err != nil {
 					return err
 				}
-
-				fmt.Println(genDiff(fileMap1, fileMap2))
-
+			} else if (ext1 == ".yaml" && ext2 == ".yaml") || (ext1 == ".yml" && ext2 == ".yml") {
+				fileMap1, err = parsers.ParseFile(file1)
+				if err != nil {
+					return err
+				}
+				fileMap2, err = parsers.ParseFile(file2)
+				if err != nil {
+					return err
+				}
+			} else if ext1 != ext2 {
+				return fmt.Errorf("разные расширения файлов: %s и %s", ext1, ext2)
+			} else {
+				return fmt.Errorf("неподдерживаемый формат: %s", ext1)
 			}
 
-			if ext1 == ".yaml" && ext2 == ".yaml" || ext1 == ".yml" && ext2 == ".yml" {
+                diffTree := genDiff(fileMap1, fileMap2)
 
-				fileMap1, err := parsers.ParseFile(c.Args().Get(0))
-				if err != nil {
-					return err
-				}
+				formatter := getFormatter(c.String("format"))
+                result := "{\n" + formatter(diffTree) + "}"
 
-				fileMap2, err := parsers.ParseFile(c.Args().Get(1))
-				if err != nil {
-					return err
-				}
-				fmt.Println(genDiff(fileMap1, fileMap2))
-			}
+             			fmt.Println(result)
 
-			if ext1 != ext2 {
-				fmt.Println("Разные расширения файлов")
-			}
 
-			
 
+
+    
 			return nil
 		},
 	}
@@ -93,42 +102,206 @@ func main() {
 
 }
 
+
+func formatStylish(nodes []Node) string {
+	return formatStylishWithDepth(nodes, 0)
+}
+
+func getFormatter(format string) func([]Node) string {
+    switch format {
+    case "stylish":
+        return formatStylish
+
+    default:
+        return formatStylish
+    }
+}
+/*
 func genDiff(map1, map2 map[string]any) string {
-	var result string
+	return "{\n" + genDiff(map1, map2) + "}"
+}
+*/
+const (
+    UNCHANGED = "unchanged"
+    ADDED     = "added"
+    REMOVED   = "removed"
+    CHANGED   = "changed"
+    NESTED    = "nested"
+)
 
-		keys1 := make([]string, 0, len(map1))
-		keys2 := make([]string, 0, len(map2))
+type Node struct {
+    Type     string          
+    Key      string           
+    Value    interface{}     
+    OldValue interface{}      
+    Children []Node           
+}
 
-			for k := range map1 {
-		keys1 = append(keys1, k)
-	}
 
-			for k := range map2 {
-		keys2 = append(keys2, k)
-	}
 
-	sort.Strings(keys1)
-	sort.Strings(keys2)
-	
-	for _, key := range keys1 {
-		if map1[key] == map2[key] {
-		result += fmt.Sprintf("  %s: %v\n", key, map1[key])
-		}
-		if map1[key] != map2[key] {
-		result += fmt.Sprintf("- %s: %v\n", key, map1[key])
-		if map2[key] != nil {
-		result += fmt.Sprintf("+ %s: %v\n", key, map2[key])
-		}
-		
-		}
-	}
+func genDiff(map1, map2 map[string]any) []Node {
+    var result []Node
 
-	for _, key := range keys2 {
-		if map1[key] == nil  {
-		
-		result += fmt.Sprintf("+ %s: %v\n", key, map2[key])
-		}
-		}
+    allKeys := make(map[string]bool)
 
-	return "{\n" + result + "}"
+    for k := range map1 {
+        allKeys[k] = true
+    }
+    for k := range map2 {
+        allKeys[k] = true
+    }
+    
+
+    keys := make([]string, 0, len(allKeys))
+    for k := range allKeys {
+        keys = append(keys, k)
+    }
+    sort.Strings(keys)
+    
+    for _, key := range keys {
+        val1 := map1[key]
+        val2 := map2[key]
+        
+
+        _, ok1 := val1.(map[string]any)
+        _, ok2 := val2.(map[string]any)
+        
+
+        if ok1 && ok2 {
+            node := Node{
+                Type:     NESTED,
+                Key:      key,
+                Children: genDiff(val1.(map[string]any), val2.(map[string]any)),
+            }
+            result = append(result, node)
+            continue
+        }
+        
+        if _, exists := map2[key]; !exists {
+            node := Node{
+                Type:     REMOVED,
+                Key:      key,
+                OldValue: val1,
+            }
+            result = append(result, node)
+            continue
+        }
+        
+        if _, exists := map1[key]; !exists {
+            node := Node{
+                Type:  ADDED,
+                Key:   key,
+                Value: val2,
+            }
+            result = append(result, node)
+            continue
+        }
+        
+        if val1 == val2 {
+            node := Node{
+                Type:  UNCHANGED,
+                Key:   key,
+                Value: val1,
+            }
+            result = append(result, node)
+            continue
+        }
+        
+        node := Node{
+            Type:     CHANGED,
+            Key:      key,
+            OldValue: val1,
+            Value:    val2,
+        }
+        result = append(result, node)
+    }
+    
+    return result
+}
+
+func isMap(v any) bool {
+    _, ok := v.(map[string]any)
+    return ok
+}
+
+func formatMap(m map[string]any, indent string) string {
+    var result string
+    
+    keys := make([]string, 0, len(m))
+    for k := range m {
+        keys = append(keys, k)
+    }
+    sort.Strings(keys)
+    
+    for _, key := range keys {
+        value := m[key]
+        if isMap(value) {
+            result += fmt.Sprintf("%s%s: {\n", indent, key)
+            result += formatMap(value.(map[string]any), indent+"  ")
+            result += fmt.Sprintf("%s}\n", indent)
+        } else {
+            result += fmt.Sprintf("%s%s: %v\n", indent, key, value)
+        }
+    }
+    
+    return result
+}
+
+
+       
+func formatStylishWithDepth(nodes []Node, depth int) string {
+    var result string
+    indent := strings.Repeat("    ", depth)
+    
+    for _, node := range nodes {
+        switch node.Type {
+        case NESTED:
+
+            result += fmt.Sprintf("%s  %s: {\n", indent, node.Key)
+            result += formatStylishWithDepth(node.Children, depth+1)
+            result += fmt.Sprintf("%s  }\n", indent)
+            
+        case UNCHANGED:
+            result += fmt.Sprintf("%s  %s: %v\n", indent, node.Key, node.Value)
+            
+        case ADDED:
+
+            if isMap(node.Value) {
+                result += fmt.Sprintf("%s+ %s: {\n", indent, node.Key)
+                result += formatMap(node.Value.(map[string]any), indent+"    ")
+                result += fmt.Sprintf("%s  }\n", indent)
+            } else {
+                result += fmt.Sprintf("%s+ %s: %v\n", indent, node.Key, node.Value)
+            }
+            
+        case REMOVED:
+            if isMap(node.OldValue) {
+                result += fmt.Sprintf("%s- %s: {\n", indent, node.Key)
+                result += formatMap(node.OldValue.(map[string]any), indent+"    ")
+                result += fmt.Sprintf("%s  }\n", indent)
+            } else {
+                result += fmt.Sprintf("%s- %s: %v\n", indent, node.Key, node.OldValue)
+            }
+            
+        case CHANGED:
+
+            if isMap(node.OldValue) {
+                result += fmt.Sprintf("%s- %s: {\n", indent, node.Key)
+                result += formatMap(node.OldValue.(map[string]any), indent+"    ")
+                result += fmt.Sprintf("%s  }\n", indent)
+            } else {
+                result += fmt.Sprintf("%s- %s: %v\n", indent, node.Key, node.OldValue)
+            }
+            
+            if isMap(node.Value) {
+                result += fmt.Sprintf("%s+ %s: {\n", indent, node.Key)
+                result += formatMap(node.Value.(map[string]any), indent+"    ")
+                result += fmt.Sprintf("%s  }\n", indent)
+            } else {
+                result += fmt.Sprintf("%s+ %s: %v\n", indent, node.Key, node.Value)
+            }
+        }
+    }
+    
+    return result
 }
