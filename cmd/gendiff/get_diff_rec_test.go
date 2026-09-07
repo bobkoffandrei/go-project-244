@@ -5,6 +5,7 @@ import(
 	"github.com/bobkoffandrei/go-project-244/cmd/parsing"
 	//	"github.com/bobkoffandrei/go-project-244/cmd/parsers"
 	"testing"
+	    "github.com/bobkoffandrei/go-project-244/formatters"
 //	"errors"
 )
 
@@ -31,7 +32,7 @@ func TestDiffRecTest(t *testing.T) {
 		t.Errorf("%s: Ошибка парсинга файлов: %v", test.name, err)
 	}
 
-		got := "{\n" +  formatStylishWithDepth(genDiff(res1, res2), 0)   + "}"
+		got := "{\n" +  formatters.FormatStylishWithDepth(genDiff(res1, res2), 0)   + "}"
 
 	if got != test.want {
 		t.Errorf("%s: got: \n%s, want: \n%s", test.name, got, test.want)

@@ -9,7 +9,9 @@ import (
 	"sort"
 	"github.com/bobkoffandrei/go-project-244/cmd/parsing"
 	"github.com/bobkoffandrei/go-project-244/cmd/parsers"
-	"strings"
+    "github.com/bobkoffandrei/go-project-244/formatters"
+    "github.com/bobkoffandrei/go-project-244/models"
+	//"strings"
 	
 )
 
@@ -80,11 +82,19 @@ func main() {
 
                 diffTree := genDiff(fileMap1, fileMap2)
 
-				formatter := getFormatter(c.String("format"))
+				formatter := formatters.GetFormatter(c.String("format"))
+
+                if c.String("format") == "plain" {
+                    result := formatter(diffTree)
+
+                    fmt.Println(result)
+                }
+
+                if c.String("format") == "stylish" {
                 result := "{\n" + formatter(diffTree) + "}"
 
-             			fmt.Println(result)
-
+             		fmt.Println(result)
+                                }
 
 
 
@@ -103,44 +113,23 @@ func main() {
 }
 
 
-func formatStylish(nodes []Node) string {
-	return formatStylishWithDepth(nodes, 0)
-}
 
-func getFormatter(format string) func([]Node) string {
-    switch format {
-    case "stylish":
-        return formatStylish
 
-    default:
-        return formatStylish
-    }
-}
+
+
+
 /*
 func genDiff(map1, map2 map[string]any) string {
 	return "{\n" + genDiff(map1, map2) + "}"
 }
 */
-const (
-    UNCHANGED = "unchanged"
-    ADDED     = "added"
-    REMOVED   = "removed"
-    CHANGED   = "changed"
-    NESTED    = "nested"
-)
-
-type Node struct {
-    Type     string          
-    Key      string           
-    Value    interface{}     
-    OldValue interface{}      
-    Children []Node           
-}
 
 
 
-func genDiff(map1, map2 map[string]any) []Node {
-    var result []Node
+
+
+func genDiff(map1, map2 map[string]any) []models.Node {
+    var result []models.Node
 
     allKeys := make(map[string]bool)
 
@@ -168,8 +157,8 @@ func genDiff(map1, map2 map[string]any) []Node {
         
 
         if ok1 && ok2 {
-            node := Node{
-                Type:     NESTED,
+            node := models.Node{
+                Type:     models.NESTED,
                 Key:      key,
                 Children: genDiff(val1.(map[string]any), val2.(map[string]any)),
             }
@@ -178,8 +167,8 @@ func genDiff(map1, map2 map[string]any) []Node {
         }
         
         if _, exists := map2[key]; !exists {
-            node := Node{
-                Type:     REMOVED,
+            node := models.Node{
+                Type:     models.REMOVED,
                 Key:      key,
                 OldValue: val1,
             }
@@ -188,8 +177,8 @@ func genDiff(map1, map2 map[string]any) []Node {
         }
         
         if _, exists := map1[key]; !exists {
-            node := Node{
-                Type:  ADDED,
+            node := models.Node{
+                Type:  models.ADDED,
                 Key:   key,
                 Value: val2,
             }
@@ -198,8 +187,8 @@ func genDiff(map1, map2 map[string]any) []Node {
         }
         
         if val1 == val2 {
-            node := Node{
-                Type:  UNCHANGED,
+            node := models.Node{
+                Type:  models.UNCHANGED,
                 Key:   key,
                 Value: val1,
             }
@@ -207,8 +196,8 @@ func genDiff(map1, map2 map[string]any) []Node {
             continue
         }
         
-        node := Node{
-            Type:     CHANGED,
+        node := models.Node{
+            Type:     models.CHANGED,
             Key:      key,
             OldValue: val1,
             Value:    val2,
@@ -219,89 +208,9 @@ func genDiff(map1, map2 map[string]any) []Node {
     return result
 }
 
-func isMap(v any) bool {
-    _, ok := v.(map[string]any)
-    return ok
-}
 
-func formatMap(m map[string]any, indent string) string {
-    var result string
-    
-    keys := make([]string, 0, len(m))
-    for k := range m {
-        keys = append(keys, k)
-    }
-    sort.Strings(keys)
-    
-    for _, key := range keys {
-        value := m[key]
-        if isMap(value) {
-            result += fmt.Sprintf("%s%s: {\n", indent, key)
-            result += formatMap(value.(map[string]any), indent+"  ")
-            result += fmt.Sprintf("%s}\n", indent)
-        } else {
-            result += fmt.Sprintf("%s%s: %v\n", indent, key, value)
-        }
-    }
-    
-    return result
-}
+
+
 
 
        
-func formatStylishWithDepth(nodes []Node, depth int) string {
-    var result string
-    indent := strings.Repeat("    ", depth)
-    
-    for _, node := range nodes {
-        switch node.Type {
-        case NESTED:
-
-            result += fmt.Sprintf("%s  %s: {\n", indent, node.Key)
-            result += formatStylishWithDepth(node.Children, depth+1)
-            result += fmt.Sprintf("%s  }\n", indent)
-            
-        case UNCHANGED:
-            result += fmt.Sprintf("%s  %s: %v\n", indent, node.Key, node.Value)
-            
-        case ADDED:
-
-            if isMap(node.Value) {
-                result += fmt.Sprintf("%s+ %s: {\n", indent, node.Key)
-                result += formatMap(node.Value.(map[string]any), indent+"    ")
-                result += fmt.Sprintf("%s  }\n", indent)
-            } else {
-                result += fmt.Sprintf("%s+ %s: %v\n", indent, node.Key, node.Value)
-            }
-            
-        case REMOVED:
-            if isMap(node.OldValue) {
-                result += fmt.Sprintf("%s- %s: {\n", indent, node.Key)
-                result += formatMap(node.OldValue.(map[string]any), indent+"    ")
-                result += fmt.Sprintf("%s  }\n", indent)
-            } else {
-                result += fmt.Sprintf("%s- %s: %v\n", indent, node.Key, node.OldValue)
-            }
-            
-        case CHANGED:
-
-            if isMap(node.OldValue) {
-                result += fmt.Sprintf("%s- %s: {\n", indent, node.Key)
-                result += formatMap(node.OldValue.(map[string]any), indent+"    ")
-                result += fmt.Sprintf("%s  }\n", indent)
-            } else {
-                result += fmt.Sprintf("%s- %s: %v\n", indent, node.Key, node.OldValue)
-            }
-            
-            if isMap(node.Value) {
-                result += fmt.Sprintf("%s+ %s: {\n", indent, node.Key)
-                result += formatMap(node.Value.(map[string]any), indent+"    ")
-                result += fmt.Sprintf("%s  }\n", indent)
-            } else {
-                result += fmt.Sprintf("%s+ %s: %v\n", indent, node.Key, node.Value)
-            }
-        }
-    }
-    
-    return result
-}
