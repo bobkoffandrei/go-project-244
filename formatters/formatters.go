@@ -11,6 +11,8 @@ func GetFormatter(format string) func([]models.Node) string {
         return FormatPlain
     case "stylish":
         return FormatStylish
+    case "json":
+		return FormatJSON
 
     default:
         return FormatStylish

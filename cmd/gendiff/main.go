@@ -94,7 +94,14 @@ func main() {
                 result := "{\n" + formatter(diffTree) + "}"
 
              		fmt.Println(result)
-                                }
+                }
+
+                                if c.String("format") == "json" {
+
+             		fmt.Println(formatter(diffTree))
+                }
+
+
 
 
 
