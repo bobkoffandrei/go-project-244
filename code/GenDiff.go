@@ -1,88 +1,83 @@
-package main
+package code
 
 import (
-	"context"
 	"fmt"
-	"github.com/urfave/cli/v3"
-	"os"
+	"path/filepath"
 	"sort"
+	"github.com/bobkoffandrei/go-project-244/cmd/parsing"
+	"github.com/bobkoffandrei/go-project-244/cmd/parsers"
+    "github.com/bobkoffandrei/go-project-244/formatters"
     "github.com/bobkoffandrei/go-project-244/models"
-    "github.com/bobkoffandrei/go-project-244/code"
 	//"strings"
 	
 )
 
+func GenDiff(file1, file2, format string) (string, error){
+	
+			ext1 := filepath.Ext(file1)
+			ext2 := filepath.Ext(file2)
 
-func main() {
+	 var fileMap1, fileMap2 map[string]any
 
-	cmd := &cli.Command{
+            var err error
 
-		Name: "gendiff",
-
-		Usage: "Compares two configuration files and shows a difference",
-
-		Flags: []cli.Flag{
-						&cli.StringFlag{
-				Name:    "format",
-				Aliases: []string{"f"},
-				Value:   "stylish",
-				Usage:   "output format",
-			},
-
-		},
-
-		Action: func(ctx context.Context, c *cli.Command) error {
-
-			if c.Args().Get(0) == "" || c.Args().Get(1) == "" {
-			err := cli.ShowAppHelp(c)
-			if err != nil {
-				return err
-			}
-			return fmt.Errorf("отсутствуют агрументы")
-
-			}
-
-
-            file1 := c.Args().Get(0)
-			file2 := c.Args().Get(1)
-
-            format := c.String("format")
-
-            result, err := code.GenDiff(file1, file2, format)
-            
-			if err != nil {
-				return err
+			if ext1 == ".json" && ext2 == ".json" {
+				fileMap1, err = parsing.ParseFile(file1)
+				if err != nil {
+					return "", err
+				}
+				fileMap2, err = parsing.ParseFile(file2)
+				if err != nil {
+					return "", err
+				}
+			} else if (ext1 == ".yaml" && ext2 == ".yaml") || (ext1 == ".yml" && ext2 == ".yml") {
+				fileMap1, err = parsers.ParseFile(file1)
+				if err != nil {
+					return "", err
+				}
+				fileMap2, err = parsers.ParseFile(file2)
+				if err != nil {
+					return "", err
+				}
+			} else if ext1 != ext2 {
+				return "", fmt.Errorf("разные расширения файлов: %s и %s", ext1, ext2)
+			} else {
+				return "", fmt.Errorf("неподдерживаемый формат: %s", ext1)
 			}
 
-			fmt.Println(result)    
-			return nil
-		},
-	}
+                var result string
+
+                diffTree := genDiff(fileMap1, fileMap2)
+
+				formatter := formatters.GetFormatter(format)
+
+                if format == "plain" {
+                    result = formatter(diffTree)
+
+                }
+
+                if format == "stylish" {
+                result = "{\n" + formatter(diffTree) + "}"
 
 
-		if err := cmd.Run(context.Background(), os.Args); err != nil {
-		    fmt.Fprintf(os.Stderr, "ошибка выполнения программы: %v\n", err)
-    		os.Exit(1)
-	}
+                }
+
+                    if format == "json" {
+
+             		result = formatter(diffTree)
+
+
+                }
+
+
+
+
+
+    
+			return result, nil
 
 
 }
-
-
-
-
-
-
-
-/*
-func genDiff(map1, map2 map[string]any) string {
-	return "{\n" + genDiff(map1, map2) + "}"
-}
-*/
-
-
-
-
 
 func genDiff(map1, map2 map[string]any) []models.Node {
     var result []models.Node
@@ -163,10 +158,3 @@ func genDiff(map1, map2 map[string]any) []models.Node {
     
     return result
 }
-
-
-
-
-
-
-       
