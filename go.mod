@@ -1,4 +1,4 @@
-module github.com/bobkoffandrei/go-project-244/code
+module github.com/bobkoffandrei/go-project-244
 
 go 1.22.2
 
