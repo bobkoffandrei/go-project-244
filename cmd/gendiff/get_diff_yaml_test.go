@@ -2,8 +2,8 @@ package main
 
 import(
 	//"github.com/bobkoffandrei/go-project-244/code"
-	"github.com/bobkoffandrei/go-project-244/code/parsers"
-	"github.com/bobkoffandrei/go-project-244/code/formatters"
+	"code/parsers"
+	"code/formatters"
 	"testing"
 	//"github.com/stretchr/testify/assert"
 	"errors"

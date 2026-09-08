@@ -2,7 +2,7 @@ package formatters
 
 import (
     "fmt"
-    "github.com/bobkoffandrei/go-project-244/code/models"
+    "code/models"
 )
 
 func FormatPlain(nodes []models.Node) string {
