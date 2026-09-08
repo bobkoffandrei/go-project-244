@@ -2,10 +2,10 @@ package main
 
 import(
 
-	"github.com/bobkoffandrei/go-project-244/cmd/parsing"
+	"code/parsing"
 	//	"github.com/bobkoffandrei/go-project-244/cmd/parsers"
 	"testing"
-	    "github.com/bobkoffandrei/go-project-244/formatters"
+	    "code/formatters"
 //	"errors"
 )
 

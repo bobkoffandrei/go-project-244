@@ -1,5 +1,3 @@
-github.com/bobkoffandrei/go-project-242 v0.0.0-20260513064705-4f00903392c1 h1:SOMD4V41WsFr8e/vh9svnlUZgTalH7SUsUX1fb8gv4k=
-github.com/bobkoffandrei/go-project-242 v0.0.0-20260513064705-4f00903392c1/go.mod h1:nk133afFuxbwSUnQWBgvKKBO2uLgDfZOAzzq4nb66nY=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/go-yaml/yaml v2.1.0+incompatible h1:RYi2hDdss1u4YE7GwixGzWwVo47T8UQwnTLB6vQiq+o=

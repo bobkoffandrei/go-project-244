@@ -1,7 +1,7 @@
 package formatters
 
 import (
-        "github.com/bobkoffandrei/go-project-244/models"
+        "github.com/bobkoffandrei/go-project-244/code/models"
 )
 
 

@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"path/filepath"
 	"sort"
-	"github.com/bobkoffandrei/go-project-244/cmd/parsing"
-	"github.com/bobkoffandrei/go-project-244/cmd/parsers"
-    "github.com/bobkoffandrei/go-project-244/formatters"
-    "github.com/bobkoffandrei/go-project-244/models"
+	"github.com/bobkoffandrei/go-project-244/code/parsing"
+	"github.com/bobkoffandrei/go-project-244/code/parsers"
+    "github.com/bobkoffandrei/go-project-244/code/formatters"
+    "github.com/bobkoffandrei/go-project-244/code/models"
 	//"strings"
 	
 )

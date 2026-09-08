@@ -6,7 +6,7 @@ import (
 	"github.com/urfave/cli/v3"
 	"os"
 	"sort"
-    "github.com/bobkoffandrei/go-project-244/models"
+    "github.com/bobkoffandrei/go-project-244/code/models"
     "github.com/bobkoffandrei/go-project-244/code"
 	//"strings"
 	

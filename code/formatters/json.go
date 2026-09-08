@@ -2,7 +2,7 @@ package formatters
 
 import (
     "fmt"
-    "github.com/bobkoffandrei/go-project-244/models"
+    "github.com/bobkoffandrei/go-project-244/code/models"
 		"encoding/json"
 )
 

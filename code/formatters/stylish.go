@@ -4,7 +4,7 @@ import (
     "fmt"
     "sort"
     "strings"
-    "github.com/bobkoffandrei/go-project-244/models"
+    "github.com/bobkoffandrei/go-project-244/code/models"
 )
 
 func FormatStylish(nodes []models.Node) string {
