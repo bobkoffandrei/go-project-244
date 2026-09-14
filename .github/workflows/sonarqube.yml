@@ -51,3 +51,6 @@ jobs:
             -Dsonar.sources=.
             -Dsonar.go.coverage.reportPaths=coverage.out
             -Dsonar.verbose=true
+            -Dsonar.exclusions=**/*_test.go,**/vendor/**
+            -Dsonar.test.exclusions=**/*_test.go
+            -Dsonar.coverage.exclusions=**/*_test.go
