@@ -56,21 +56,20 @@ func GenDiff(file1, file2, format string) (string, error){
 
                 }
 
-                if format == "stylish" {
+                if format == "stylish" ||  format != "plain" && format != "json" && format != "stylish" {
                 result = "{\n" + formatter(diffTree) + "}"
 
 
                 }
 
-                    if format == "json" {
+                if format == "json" {
 
              		result = formatter(diffTree)
 
 
                 }
-
-
-
+                
+                
 
 
     
