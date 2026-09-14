@@ -27,7 +27,7 @@ func FormatStylishWithDepth(nodes []models.Node, depth int) string {
             result += fmt.Sprintf("%s}\n", indent)
 
         case models.UNCHANGED:
-            result += fmt.Sprintf("%s  %s: %s\n", indent, node.Key, formatValue(node.Value))
+                result += fmt.Sprintf("%s  %s: %s\n", prefixIndent, node.Key, formatValue(node.Value))
 
         case models.ADDED:
             if isMap(node.Value) {
