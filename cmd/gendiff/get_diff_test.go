@@ -4,9 +4,10 @@ import(
 	//"github.com/bobkoffandrei/go-project-244/code"
 	"code/parsing"
 	"testing"
-	    "code/formatters"
+//	    "code/formatters"
 	//"github.com/stretchr/testify/assert"
 	"errors"
+	"code"
 )
 
 func TestDiffTest(t *testing.T) {
@@ -45,22 +46,16 @@ func TestDiffTest(t *testing.T) {
   + timeout: 50
 }`},	}
 
-	for _, test := range Tests {
-
-	res1, err := parsing.ParseFile(test.path1)
-
-		if err != nil {
-		t.Errorf("%s: Ошибка парсинга файлов: %v", test.name, err)
-	}
+  for _, test := range Tests {
 
 
-	res2, err := parsing.ParseFile(test.path2)
+	got, err := code.GenDiff(test.path1, test.path2, "")
 
-	if err != nil {
-		t.Errorf("%s: Ошибка парсинга файлов: %v", test.name, err)
-	}
+  if err != nil {
+    t.Errorf("%s: Ошибка выполнения GenDiff: %v", test.name, err)
+  }
 
-	got := "{\n" +  formatters.FormatStylishWithDepth(genDiff(res1, res2), 0)   + "}"
+		//got := formatters.FormatJSON(diffTree)
 
 	if got != test.want {
 		t.Errorf("%s: got: \n%s, want: \n%s", test.name, got, test.want)

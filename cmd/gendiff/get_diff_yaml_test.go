@@ -3,10 +3,11 @@ package main
 import(
 	//"github.com/bobkoffandrei/go-project-244/code"
 	"code/parsers"
-	"code/formatters"
+//	"code/formatters"
 	"testing"
 	//"github.com/stretchr/testify/assert"
 	"errors"
+	"code"
 )
 
 func TestDiffTestYaml(t *testing.T) {
@@ -46,22 +47,15 @@ func TestDiffTestYaml(t *testing.T) {
 }`},
 	}
 
-	for _, test := range Tests {
-
-	res1, err := parsers.ParseFile(test.path1)
-
-		if err != nil {
-		t.Errorf("%s: Ошибка парсинга файлов: %v", test.name, err)
-	}
+  for _, test := range Tests {
 
 
-	res2, err := parsers.ParseFile(test.path2)
+	got, err := code.GenDiff(test.path1, test.path2, "")
 
-	if err != nil {
-		t.Errorf("%s: Ошибка парсинга файлов: %v", test.name, err)
-	}
+  if err != nil {
+    t.Errorf("%s: Ошибка выполнения GenDiff: %v", test.name, err)
+  }
 
-	got := "{\n" +  formatters.FormatStylishWithDepth(genDiff(res1, res2), 0)   + "}"
 	if got != test.want {
 		t.Errorf("%s: got: \n%s, want: \n%s", test.name, got, test.want)
 	}

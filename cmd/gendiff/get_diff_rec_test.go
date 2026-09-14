@@ -2,11 +2,12 @@ package main
 
 import(
 
-	"code/parsing"
+	///"code/parsing"
 	//	"github.com/bobkoffandrei/go-project-244/cmd/parsers"
 	"testing"
-	    "code/formatters"
+	//    "code/formatters"
 //	"errors"
+"code"
 )
 
 func TestDiffRecTest(t *testing.T) {
@@ -60,22 +61,18 @@ func TestDiffRecTest(t *testing.T) {
 	
 	}
 
-	for _, test := range Tests {
-
-	res1, err := parsing.ParseFile(test.path1)
-
-		if err != nil {
-		t.Errorf("%s: Ошибка парсинга файлов: %v", test.name, err)
-	}
 
 
-	res2, err := parsing.ParseFile(test.path2)
+  for _, test := range Tests {
 
-	if err != nil {
-		t.Errorf("%s: Ошибка парсинга файлов: %v", test.name, err)
-	}
 
-		got := "{\n" +  formatters.FormatStylishWithDepth(genDiff(res1, res2), 0)   + "}"
+	got, err := code.GenDiff(test.path1, test.path2, "")
+
+  if err != nil {
+    t.Errorf("%s: Ошибка выполнения GenDiff: %v", test.name, err)
+  }
+
+		//got := formatters.FormatJSON(diffTree)
 
 	if got != test.want {
 		t.Errorf("%s: got: \n%s, want: \n%s", test.name, got, test.want)
@@ -83,5 +80,6 @@ func TestDiffRecTest(t *testing.T) {
 	}
 
 }
+
 
 

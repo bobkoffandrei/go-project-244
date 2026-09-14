@@ -2,10 +2,11 @@ package main
 
 import(
 
-	"code/parsing"
+//	"code/parsing"
 	//	"github.com/bobkoffandrei/go-project-244/cmd/parsers"
 	"testing"
-	    "code/formatters"
+//	    "code/formatters"
+		"code"
 //	"errors"
 )
 
@@ -18,24 +19,17 @@ func TestDiffPlain(t *testing.T) {
 	
 	}
 
-	for _, test := range Tests {
 
-	res1, err := parsing.ParseFile(test.path1)
-
-		if err != nil {
-		t.Errorf("%s: Ошибка парсинга файлов: %v", test.name, err)
-	}
+for _, test := range Tests {
 
 
-	res2, err := parsing.ParseFile(test.path2)
+	got, err := code.GenDiff(test.path1, test.path2, "plain")
 
-	if err != nil {
-		t.Errorf("%s: Ошибка парсинга файлов: %v", test.name, err)
-	}
+  if err != nil {
+    t.Errorf("%s: Ошибка выполнения GenDiff: %v", test.name, err)
+  }
 
-	diffTree := genDiff(res1, res2)
-
-		got := formatters.FormatPlain(diffTree)
+		//got := formatters.FormatJSON(diffTree)
 
 	if got != test.want {
 		t.Errorf("%s: got: \n%s, want: \n%s", test.name, got, test.want)

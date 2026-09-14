@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"github.com/urfave/cli/v3"
 	"os"
-	"sort"
-    "code/models"
     "code"
 	//"strings"
 	
@@ -67,23 +65,7 @@ func main() {
 
 
 }
-
-
-
-
-
-
-
 /*
-func genDiff(map1, map2 map[string]any) string {
-	return "{\n" + genDiff(map1, map2) + "}"
-}
-*/
-
-
-
-
-
 func genDiff(map1, map2 map[string]any) []models.Node {
     var result []models.Node
 
@@ -170,3 +152,4 @@ func genDiff(map1, map2 map[string]any) []models.Node {
 
 
        
+*/
