@@ -14,17 +14,36 @@ func TestDiffTest(t *testing.T) {
 		name, path1, path2, want string
 	}{
 {"noraml1", "../../testdata/fixture/file1.json", "../../testdata/fixture/file2.json", `{
-- follow: false
-  host: hexlet.io
-- proxy: 123.234.53.22
-- timeout: 50
-+ timeout: 20
-+ verbose: true
+  - follow: false
+    host: hexlet.io
+  - proxy: 123.234.53.22
+  - timeout: 50
+  + timeout: 20
+  + verbose: true
 }`},
-		{"noraml2", "../../testdata/fixture/file2.json", "../../testdata/fixture/file3.json", "{\n- host: hexlet.io\n+ host: hexlet.ru\n- timeout: 20\n+ timeout: 30\n- verbose: true\n+ verbose: false\n}"},
-		{"noraml3", "../../testdata/fixture/file4.json", "../../testdata/fixture/file1.json", "{\n+ follow: false\n  host: hexlet.io\n- port: 8080\n+ proxy: 123.234.53.22\n- timeout: 20\n+ timeout: 50\n- verbose: false\n}"},
-		{"oneempty", "../../testdata/fixture/empty.json", "../../testdata/fixture/file1.json", "{\n+ follow: false\n+ host: hexlet.io\n+ proxy: 123.234.53.22\n+ timeout: 50\n}"},
-	}
+{"noraml2", "../../testdata/fixture/file2.json", "../../testdata/fixture/file3.json", `{
+  - host: hexlet.io
+  + host: hexlet.ru
+  - timeout: 20
+  + timeout: 30
+  - verbose: true
+  + verbose: false
+}`},
+{"noraml3", "../../testdata/fixture/file4.json", "../../testdata/fixture/file1.json", `{
+  + follow: false
+    host: hexlet.io
+  - port: 8080
+  + proxy: 123.234.53.22
+  - timeout: 20
+  + timeout: 50
+  - verbose: false
+}`},
+{"oneempty", "../../testdata/fixture/empty.json", "../../testdata/fixture/file1.json", `{
+  + follow: false
+  + host: hexlet.io
+  + proxy: 123.234.53.22
+  + timeout: 50
+}`},	}
 
 	for _, test := range Tests {
 
