@@ -2,11 +2,13 @@ package formatters
 
 import (
     "fmt"
+    "strings"
     "code/models"
 )
 
 func FormatPlain(nodes []models.Node) string {
-    return FormatPlainWithPath(nodes, "")
+    result := FormatPlainWithPath(nodes, "")
+    return strings.TrimSuffix(result, "\n")
 }
 
 func FormatPlainWithPath(nodes []models.Node, path string) string {
@@ -66,22 +68,22 @@ func formatValuePlain(value interface{}) string {
         return "null"
     }
     
-    // объект или массив
+
     if isComplexValue(value) {
         return "[complex value]"
     }
     
-    // Для строк добавляем кавычки
+
     if str, ok := value.(string); ok {
         return "'" + str + "'"
     }
     
-    // Для булевых значений
+
     if _, ok := value.(bool); ok {
         return fmt.Sprintf("%v", value)
     }
     
-    // Для чисел
+
     if _, ok := value.(float64); ok {
         return fmt.Sprintf("%v", value)
     }
@@ -89,7 +91,7 @@ func formatValuePlain(value interface{}) string {
         return fmt.Sprintf("%v", value)
     }
     
-    // Для остальных типов
+
     return fmt.Sprintf("%v", value)
 }
 
@@ -98,8 +100,7 @@ func isComplexValue(value interface{}) bool {
     if value == nil {
         return false
     }
-    
-    // Проверяем на map
+
     if _, ok := value.(map[string]any); ok {
         return true
     }
@@ -107,7 +108,7 @@ func isComplexValue(value interface{}) bool {
         return true
     }
     
-    // Проверяем на массив/слайс
+
     if _, ok := value.([]interface{}); ok {
         return true
     }

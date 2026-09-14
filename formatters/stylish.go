@@ -19,9 +19,9 @@ func FormatStylishWithDepth(nodes []models.Node, depth int) string {
         switch node.Type {
         case NESTED:
 
-            result += fmt.Sprintf("%s  %s: {\n", indent, node.Key)
+            result += fmt.Sprintf("%s    %s: {\n", indent, node.Key)
             result += FormatStylishWithDepth(node.Children, depth+1)
-            result += fmt.Sprintf("%s  }\n", indent)
+            result += fmt.Sprintf("%s    }\n", indent)
             
         case UNCHANGED:
             result += fmt.Sprintf("%s  %s: %v\n", indent, node.Key, node.Value)
