@@ -9,14 +9,12 @@ import (
 
 
 func FormatJSON(nodes []models.Node) string {
-    result := map[string]interface{}{
-        "diff": buildJSONDiff(nodes),
-    }
-    jsonBytes, err := json.MarshalIndent(result, "", "  ")
-    if err != nil {
-        return fmt.Sprintf(`{"error": "%v"}`, err)
-    }
-    return string(jsonBytes)
+	result := buildJSONDiff(nodes)
+	jsonBytes, err := json.MarshalIndent(result, "", "  ")
+	if err != nil {
+		return fmt.Sprintf(`{"error": "failed to marshal JSON: %v"}`, err)
+	}
+	return string(jsonBytes)
 }
 
 type JSONDiff struct {
