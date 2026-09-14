@@ -13,46 +13,46 @@ func FormatStylish(nodes []models.Node) string {
 
 func FormatStylishWithDepth(nodes []models.Node, depth int) string {
     var result string
-    indent := strings.Repeat("    ", depth)
+    indent := strings.Repeat("  ", depth+2)
     
     for _, node := range nodes {
         switch node.Type {
-        case NESTED:
+        case models.NESTED:
 
-            result += fmt.Sprintf("%s    %s: {\n", indent, node.Key)
+            result += fmt.Sprintf("%s  %s: {\n", indent, node.Key)
             result += FormatStylishWithDepth(node.Children, depth+1)
-            result += fmt.Sprintf("%s    }\n", indent)
+            result += fmt.Sprintf("%s  }\n", indent)
             
-        case UNCHANGED:
-            result += fmt.Sprintf("%s  %s: %v\n", indent, node.Key, node.Value)
+        case models.UNCHANGED:
+            result += fmt.Sprintf("%s  %s: %v\n", indent, node.Key, formatValue(node.Value))
             
-        case ADDED:
+        case models.ADDED:
 
             if isMap(node.Value) {
                 result += fmt.Sprintf("%s+ %s: {\n", indent, node.Key)
                 result += formatMap(node.Value.(map[string]any), indent+"    ")
                 result += fmt.Sprintf("%s  }\n", indent)
             } else {
-                result += fmt.Sprintf("%s+ %s: %v\n", indent, node.Key, node.Value)
+                result += fmt.Sprintf("%s+ %s: %v\n", indent, node.Key, formatValue(node.Value))
             }
             
-        case REMOVED:
+        case models.REMOVED:
             if isMap(node.OldValue) {
                 result += fmt.Sprintf("%s- %s: {\n", indent, node.Key)
                 result += formatMap(node.OldValue.(map[string]any), indent+"    ")
                 result += fmt.Sprintf("%s  }\n", indent)
             } else {
-                result += fmt.Sprintf("%s- %s: %v\n", indent, node.Key, node.OldValue)
+                result += fmt.Sprintf("%s- %s: %v\n", indent, node.Key, formatValue(node.OldValue))
             }
             
-        case CHANGED:
+        case models.CHANGED:
 
             if isMap(node.OldValue) {
                 result += fmt.Sprintf("%s- %s: {\n", indent, node.Key)
                 result += formatMap(node.OldValue.(map[string]any), indent+"    ")
                 result += fmt.Sprintf("%s  }\n", indent)
             } else {
-                result += fmt.Sprintf("%s- %s: %v\n", indent, node.Key, node.OldValue)
+                result += fmt.Sprintf("%s- %s: %v\n", indent, node.Key, formatValue(node.OldValue))
             }
             
             if isMap(node.Value) {
@@ -60,12 +60,19 @@ func FormatStylishWithDepth(nodes []models.Node, depth int) string {
                 result += formatMap(node.Value.(map[string]any), indent+"    ")
                 result += fmt.Sprintf("%s  }\n", indent)
             } else {
-                result += fmt.Sprintf("%s+ %s: %v\n", indent, node.Key, node.Value)
+                result += fmt.Sprintf("%s+ %s: %v\n", indent, node.Key, formatValue(node.Value))
             }
         }
     }
     
     return result
+}
+
+func formatValue(v interface{}) string {
+    if v == nil {
+        return "null"
+    }
+    return fmt.Sprintf("%v", v)
 }
 
 func formatMap(m map[string]any, indent string) string {
@@ -81,7 +88,7 @@ func formatMap(m map[string]any, indent string) string {
         value := m[key]
         if isMap(value) {
             result += fmt.Sprintf("%s%s: {\n", indent, key)
-            result += formatMap(value.(map[string]any), indent+"  ")
+            result += formatMap(value.(map[string]any), indent+"    ")
             result += fmt.Sprintf("%s}\n", indent)
         } else {
             result += fmt.Sprintf("%s%s: %v\n", indent, key, value)
@@ -95,11 +102,3 @@ func isMap(v any) bool {
     _, ok := v.(map[string]any)
     return ok
 }
-
-const (
-    UNCHANGED = "unchanged"
-    ADDED     = "added"
-    REMOVED   = "removed"
-    CHANGED   = "changed"
-    NESTED    = "nested"
-)

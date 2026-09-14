@@ -24,20 +24,20 @@ func FormatPlainWithPath(nodes []models.Node, path string) string {
         }
         
         switch node.Type {
-        case NESTED:
+        case models.NESTED:
 
             result += FormatPlainWithPath(node.Children, currentPath)
             
-        case UNCHANGED:
+        case models.UNCHANGED:
            
             
-        case ADDED:
+        case models.ADDED:
             result += formatAddedPlain(currentPath, node.Value)
             
-        case REMOVED:
+        case models.REMOVED:
             result += formatRemovedPlain(currentPath)
             
-        case CHANGED:
+        case models.CHANGED:
             result += formatChangedPlain(currentPath, node.OldValue, node.Value)
         }
     }
