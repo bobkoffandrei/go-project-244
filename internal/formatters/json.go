@@ -1,23 +1,21 @@
 package formatters
 
 import (
-    "fmt"
-    "code/models"
-		"encoding/json"
+	"code/models"
+	"encoding/json"
+	"fmt"
 )
 
-
-
 func FormatJSON(nodes []models.Node) string {
-    diff := buildJSONDiff(nodes)
-    result := map[string]interface{}{
-        "diff": diff,   // ← обёртка с ключом "diff"
-    }
-    jsonBytes, err := json.MarshalIndent(result, "", "  ")
-    if err != nil {
-        return fmt.Sprintf(`{"error": "failed to marshal JSON: %v"}`, err)
-    }
-    return string(jsonBytes)
+	diff := buildJSONDiff(nodes)
+	result := map[string]interface{}{
+		"diff": diff, // ← обёртка с ключом "diff"
+	}
+	jsonBytes, err := json.MarshalIndent(result, "", "  ")
+	if err != nil {
+		return fmt.Sprintf(`{"error": "failed to marshal JSON: %v"}`, err)
+	}
+	return string(jsonBytes)
 }
 
 type JSONDiff struct {

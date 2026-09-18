@@ -1,12 +1,7 @@
 package code
 
-import(
-
-	//"code/parsing"
-	//	"github.com/bobkoffandrei/go-project-244/cmd/parsers"
+import (
 	"testing"
-	//    "code/formatters"
-//	"errors"
 )
 
 func TestDiffPlain(t *testing.T) {
@@ -58,24 +53,19 @@ func TestDiffPlain(t *testing.T) {
         fee: 100500
     }
 }`},
-	
 	}
 
 	for _, test := range Tests {
 
+		got, err := GenDiff(test.path1, test.path2, test.style)
 
-	got, err := GenDiff(test.path1, test.path2, test.style)
+		if err != nil {
+			t.Errorf("Ошибка выполнения GenDiff: %v", err)
+		}
 
-	if err != nil {
-		t.Errorf("Ошибка выполнения GenDiff: %v", err)
-	}
-
-
-	if got != test.want {
-		t.Errorf("%s: got: \n%s, want: \n%s", test.name, got, test.want)
-	}
+		if got != test.want {
+			t.Errorf("%s: got: \n%s, want: \n%s", test.name, got, test.want)
+		}
 	}
 
 }
-
-

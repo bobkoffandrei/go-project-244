@@ -1,13 +1,13 @@
 package main
 
-import(
+import (
 	//"github.com/bobkoffandrei/go-project-244/code"
-	"code/parsers"
-//	"code/formatters"
+	"code/internal/parsers"
+	//	"code/formatters"
 	"testing"
 	//"github.com/stretchr/testify/assert"
-	"errors"
 	"code"
+	"errors"
 )
 
 func TestDiffTestYaml(t *testing.T) {
@@ -47,77 +47,74 @@ func TestDiffTestYaml(t *testing.T) {
 }`},
 	}
 
-  for _, test := range Tests {
+	for _, test := range Tests {
 
+		got, err := code.GenDiff(test.path1, test.path2, "")
 
-	got, err := code.GenDiff(test.path1, test.path2, "")
+		if err != nil {
+			t.Errorf("%s: Ошибка выполнения GenDiff: %v", test.name, err)
+		}
 
-  if err != nil {
-    t.Errorf("%s: Ошибка выполнения GenDiff: %v", test.name, err)
-  }
-
-	if got != test.want {
-		t.Errorf("%s: got: \n%s, want: \n%s", test.name, got, test.want)
-	}
+		if got != test.want {
+			t.Errorf("%s: got: \n%s, want: \n%s", test.name, got, test.want)
+		}
 	}
 
 }
 
 func TestPathErrorsYaml(t *testing.T) {
 	Tests := []struct {
-		name, path1, path2  string
-		wantErr error
+		name, path1, path2 string
+		wantErr            error
 	}{
 		{"wrong path1", "../..//file8.yaml", "../../testdata/fiadade/file2.yaml", parsers.ErrFileNotFound},
 		{"wrong path2", "../../testdata/fixture/file2.yaml", "../../testdata/fi123123e/file2.yaml", parsers.ErrFileNotFound},
 		{"wrong both", "../../tesdfgsdfge/file2.yaml", "../../testdata/fi123123e/file2.yaml", parsers.ErrFileNotFound},
 	}
 
-
 	for _, test := range Tests {
 
 		t.Run(test.name, func(t *testing.T) {
-	_, err := parsers.ParseFile(test.path1)
+			_, err := parsers.ParseFile(test.path1)
 
-	        if !errors.Is(err, test.wantErr) && err != nil {
-            t.Fatalf("%s: ожидали ошибку ErrFileNotFound, получили: %v", test.name, err)
-        }
+			if !errors.Is(err, test.wantErr) && err != nil {
+				t.Fatalf("%s: ожидали ошибку ErrFileNotFound, получили: %v", test.name, err)
+			}
 
-	_, err = parsers.ParseFile(test.path2)
+			_, err = parsers.ParseFile(test.path2)
 
-        if !errors.Is(err, test.wantErr)  && err != nil {
-            t.Errorf("%s: ожидали ошибку ErrFileNotFound, получили: %v", test.name, err)
-        }
-})
+			if !errors.Is(err, test.wantErr) && err != nil {
+				t.Errorf("%s: ожидали ошибку ErrFileNotFound, получили: %v", test.name, err)
+			}
+		})
 
 	}
 
 }
 
 func TestOtherErrorsYaml(t *testing.T) {
-		Tests := []struct {
-		name, path1, path2  string
-		wantErr error
+	Tests := []struct {
+		name, path1, path2 string
+		wantErr            error
 	}{
 		{"Notyaml", "../../testdata/fixture/file5.yaml", "../../testdata/fixture/file5.yaml", parsers.ErrParsingFile},
-
 	}
 
 	for _, test := range Tests {
 
-			t.Run(test.name, func(t *testing.T) {
-	_, err := parsers.ParseFile(test.path1)
+		t.Run(test.name, func(t *testing.T) {
+			_, err := parsers.ParseFile(test.path1)
 
-	        if !errors.Is(err, test.wantErr) && err != nil {
-            t.Fatalf("%s: ожидали ошибку ErrparsersFile, получили: %v", test.name, err)
-        }
+			if !errors.Is(err, test.wantErr) && err != nil {
+				t.Fatalf("%s: ожидали ошибку ErrparsersFile, получили: %v", test.name, err)
+			}
 
-	_, err = parsers.ParseFile(test.path2)
+			_, err = parsers.ParseFile(test.path2)
 
-        if !errors.Is(err, test.wantErr)  && err != nil {
-            t.Errorf("%s: ожидали ошибку ErrparsersFile, получили: %v", test.name, err)
-        }
-})
+			if !errors.Is(err, test.wantErr) && err != nil {
+				t.Errorf("%s: ожидали ошибку ErrparsersFile, получили: %v", test.name, err)
+			}
+		})
 
 	}
 

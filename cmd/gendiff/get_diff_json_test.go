@@ -1,20 +1,20 @@
 package main
 
-import(
+import (
 
 	//"code/parsing"
 	//	"github.com/bobkoffandrei/go-project-244/cmd/parsers"
 	"testing"
-	  //  "code/formatters"
-      "code"
-//	"errors" 
+	//  "code/formatters"
+	"code"
+	// "errors"
 )
 
 func TestDiffJson(t *testing.T) {
 	Tests := []struct {
 		name, path1, path2, want string
 	}{
-		{"Plain1", "../../testdata/fixture/file2.json", "../../testdata/fixture/file1.json",`{
+		{"Plain1", "../../testdata/fixture/file2.json", "../../testdata/fixture/file1.json", `{
   "diff": [
     {
       "type": "added",
@@ -44,7 +44,7 @@ func TestDiffJson(t *testing.T) {
     }
   ]
 }`},
-{"Plain1", "../../testdata/fixture/recFile1.json", "../../testdata/fixture/recFile2.json", `{
+		{"Plain1", "../../testdata/fixture/recFile1.json", "../../testdata/fixture/recFile2.json", `{
   "diff": [
     {
       "type": "nested",
@@ -165,20 +165,17 @@ func TestDiffJson(t *testing.T) {
 
 	for _, test := range Tests {
 
+		got, err := code.GenDiff(test.path1, test.path2, "json")
 
-	got, err := code.GenDiff(test.path1, test.path2, "json")
-
-  if err != nil {
-    t.Errorf("%s: Ошибка выполнения GenDiff: %v", test.name, err)
-  }
+		if err != nil {
+			t.Errorf("%s: Ошибка выполнения GenDiff: %v", test.name, err)
+		}
 
 		//got := formatters.FormatJSON(diffTree)
 
-	if got != test.want {
-		t.Errorf("%s: got: \n%s, want: \n%s", test.name, got, test.want)
-	}
+		if got != test.want {
+			t.Errorf("%s: got: \n%s, want: \n%s", test.name, got, test.want)
+		}
 	}
 
 }
-
-

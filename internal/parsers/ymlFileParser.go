@@ -1,16 +1,16 @@
 package parsers
 
 import (
+	"errors"
 	"fmt"
 	"os"
-	"errors"
-	//"encoding/json"
+
 	"github.com/go-yaml/yaml"
 )
 
-var ErrFileNotFound = errors.New("не найден файл")
-var ErrParsingFile = errors.New("ошибка парсинга файла")
-var ErrEmptyFile = errors.New("файл пуст")
+var ErrFileNotFound = errors.New("file not found")
+var ErrParsingFile = errors.New("file parsing error")
+var ErrEmptyFile = errors.New("file is empty")
 
 func ParseFile(path string) (map[string]any, error) {
 	fileData, err := os.ReadFile(path)
@@ -25,7 +25,7 @@ func ParseFile(path string) (map[string]any, error) {
 
 	// Создаем map для результата
 	result := make(map[string]any)
-	
+
 	// Парсим YAML напрямую в map[string]any
 	// Для этого нужно использовать промежуточный шаг
 	var rawData map[interface{}]interface{}
@@ -50,7 +50,6 @@ func ParseFile(path string) (map[string]any, error) {
 
 	return result, nil
 }
-
 
 func convertValue(value interface{}) interface{} {
 	switch v := value.(type) {
