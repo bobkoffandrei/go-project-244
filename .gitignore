@@ -1,0 +1,5 @@
+*.exe
+*.exe~
+
+*:Zone.Identifier
+*.Zone.Identifier
