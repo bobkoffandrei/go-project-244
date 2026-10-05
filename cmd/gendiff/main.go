@@ -1,7 +1,7 @@
 package main
 
 import (
-	"code/internal"
+	"code"
 	"context"
 	"fmt"
 	"os"
@@ -42,7 +42,7 @@ func main() {
 
 			format := c.String("format")
 
-			result, err := internal.GenDiff(file1, file2, format)
+			result, err := code.GenDiff(file1, file2, format)
 
 			if err != nil {
 				return fmt.Errorf("error generating diff: %v", err)

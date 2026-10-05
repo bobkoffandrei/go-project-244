@@ -1,4 +1,4 @@
-package internal
+package code
 
 import (
 	"code/internal/formatters"

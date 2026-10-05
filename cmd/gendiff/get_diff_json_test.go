@@ -1,7 +1,7 @@
 package main
 
 import (
-	"code/internal"
+	"code"
 	"testing"
 )
 
@@ -160,7 +160,7 @@ func TestDiffJson(t *testing.T) {
 
 	for _, test := range Tests {
 
-		got, err := internal.GenDiff(test.path1, test.path2, "json")
+		got, err := code.GenDiff(test.path1, test.path2, "json")
 
 		if err != nil {
 			t.Errorf("%s: Ошибка выполнения GenDiff: %v", test.name, err)

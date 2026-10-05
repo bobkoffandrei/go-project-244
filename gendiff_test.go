@@ -1,4 +1,4 @@
-package internal
+package code
 
 import (
 	"testing"
@@ -8,8 +8,8 @@ func TestDiffPlain(t *testing.T) {
 	Tests := []struct {
 		name, path1, path2, style, want string
 	}{
-		{"PlainMain", "../testdata/fixture/file2.json", "../testdata/fixture/file1.json", "plain", "Property 'follow' was added with value: false\nProperty 'proxy' was added with value: '123.234.53.22'\nProperty 'timeout' was updated. From 20 to 50\nProperty 'verbose' was removed"},
-		{"StylishMain", "../testdata/fixture/recFile1.json", "../testdata/fixture/recFile2.json", "stylish", `{
+		{"PlainMain", "testdata/fixture/file2.json", "testdata/fixture/file1.json", "plain", "Property 'follow' was added with value: false\nProperty 'proxy' was added with value: '123.234.53.22'\nProperty 'timeout' was updated. From 20 to 50\nProperty 'verbose' was removed"},
+		{"StylishMain", "testdata/fixture/recFile1.json", "testdata/fixture/recFile2.json", "stylish", `{
     common: {
       + follow: false
         setting1: Value 1
