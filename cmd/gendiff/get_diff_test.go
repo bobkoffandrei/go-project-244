@@ -1,14 +1,11 @@
 package main
 
 import (
-	//"github.com/bobkoffandrei/go-project-244/code"
+	"code/internal"
 	"code/internal/parsing"
-	"testing"
-
-	//	    "code/formatters"
-	//"github.com/stretchr/testify/assert"
-	"code"
+	"encoding/json"
 	"errors"
+	"testing"
 )
 
 func TestDiffTest(t *testing.T) {
@@ -49,13 +46,11 @@ func TestDiffTest(t *testing.T) {
 
 	for _, test := range Tests {
 
-		got, err := code.GenDiff(test.path1, test.path2, "")
+		got, err := internal.GenDiff(test.path1, test.path2, "")
 
 		if err != nil {
 			t.Errorf("%s: Ошибка выполнения GenDiff: %v", test.name, err)
 		}
-
-		//got := formatters.FormatJSON(diffTree)
 
 		if got != test.want {
 			t.Errorf("%s: got: \n%s, want: \n%s", test.name, got, test.want)
@@ -106,15 +101,13 @@ func TestOtherErrors(t *testing.T) {
 
 		t.Run(test.name, func(t *testing.T) {
 			_, err := parsing.ParseFile(test.path1)
-
-			if !errors.Is(err, test.wantErr) && err != nil {
-				t.Fatalf("%s: ожидали ошибку ErrParsingFile, получили: %v", test.name, err)
+			if err == nil {
+				t.Fatalf("%s: ожидали ошибку, получили nil", test.name)
 			}
 
-			_, err = parsing.ParseFile(test.path2)
-
-			if !errors.Is(err, test.wantErr) && err != nil {
-				t.Errorf("%s: ожидали ошибку ErrParsingFile, получили: %v", test.name, err)
+			var syntaxErr *json.SyntaxError
+			if !errors.As(err, &syntaxErr) {
+				t.Errorf("%s: ожидали json.SyntaxError, получили: %T (%v)", test.name, err, err)
 			}
 		})
 

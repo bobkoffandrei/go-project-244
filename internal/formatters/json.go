@@ -1,7 +1,7 @@
 package formatters
 
 import (
-	"code/models"
+	"code/internal/models"
 	"encoding/json"
 	"fmt"
 )

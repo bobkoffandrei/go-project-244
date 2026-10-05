@@ -1,13 +1,8 @@
 package main
 
 import (
-
-	///"code/parsing"
-	//	"github.com/bobkoffandrei/go-project-244/cmd/parsers"
+	"code/internal"
 	"testing"
-	//    "code/formatters"
-	//	"errors"
-	"code"
 )
 
 func TestDiffRecTest(t *testing.T) {
@@ -62,13 +57,11 @@ func TestDiffRecTest(t *testing.T) {
 
 	for _, test := range Tests {
 
-		got, err := code.GenDiff(test.path1, test.path2, "")
+		got, err := internal.GenDiff(test.path1, test.path2, "")
 
 		if err != nil {
 			t.Errorf("%s: Ошибка выполнения GenDiff: %v", test.name, err)
 		}
-
-		//got := formatters.FormatJSON(diffTree)
 
 		if got != test.want {
 			t.Errorf("%s: got: \n%s, want: \n%s", test.name, got, test.want)

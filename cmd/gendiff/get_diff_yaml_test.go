@@ -1,13 +1,11 @@
 package main
 
 import (
-	//"github.com/bobkoffandrei/go-project-244/code"
-	"code/internal/parsers"
-	//	"code/formatters"
-	"testing"
-	//"github.com/stretchr/testify/assert"
-	"code"
 	"errors"
+	"testing"
+
+	"code/internal"
+	"code/internal/parsers"
 )
 
 func TestDiffTestYaml(t *testing.T) {
@@ -49,7 +47,7 @@ func TestDiffTestYaml(t *testing.T) {
 
 	for _, test := range Tests {
 
-		got, err := code.GenDiff(test.path1, test.path2, "")
+		got, err := internal.GenDiff(test.path1, test.path2, "")
 
 		if err != nil {
 			t.Errorf("%s: Ошибка выполнения GenDiff: %v", test.name, err)

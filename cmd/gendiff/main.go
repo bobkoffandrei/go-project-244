@@ -1,12 +1,12 @@
 package main
 
 import (
-	"code"
+	"code/internal"
 	"context"
 	"fmt"
-	"github.com/urfave/cli/v3"
 	"os"
-	//"strings"
+
+	"github.com/urfave/cli/v3"
 )
 
 func main() {
@@ -42,10 +42,10 @@ func main() {
 
 			format := c.String("format")
 
-			result, err := code.GenDiff(file1, file2, format)
+			result, err := internal.GenDiff(file1, file2, format)
 
 			if err != nil {
-				return fmt.Errorf("parsing error: %v", err)
+				return fmt.Errorf("error generating diff: %v", err)
 			}
 
 			fmt.Println(result)
@@ -54,7 +54,7 @@ func main() {
 	}
 
 	if err := cmd.Run(context.Background(), os.Args); err != nil {
-		fmt.Fprintf(os.Stderr, "program execution error: %v\n", err)
+		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(1)
 	}
 

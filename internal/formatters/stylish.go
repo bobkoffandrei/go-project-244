@@ -1,7 +1,7 @@
 package formatters
 
 import (
-	"code/models"
+	"code/internal/models"
 	"fmt"
 	"sort"
 	"strings"

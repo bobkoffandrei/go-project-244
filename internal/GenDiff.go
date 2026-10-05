@@ -1,10 +1,10 @@
-package code
+package internal
 
 import (
 	"code/internal/formatters"
+	"code/internal/models"
 	"code/internal/parsers"
 	"code/internal/parsing"
-	"code/models"
 	"fmt"
 	"path/filepath"
 	"reflect"

@@ -8,7 +8,7 @@ import (
 )
 
 var ErrFileNotFound = errors.New("file not found")
-var ErrParsingFile = errors.New("file parsing error")
+var ErrParsingFile = errors.New("various file extensions: .json и .jso")
 
 func ParseFile(path string) (map[string]any, error) {
 	var data map[string]any
@@ -20,7 +20,7 @@ func ParseFile(path string) (map[string]any, error) {
 
 	if err := json.Unmarshal(fileData, &data); err != nil {
 
-		return nil, fmt.Errorf("%w", ErrParsingFile)
+		return nil, fmt.Errorf("%w", err)
 	}
 
 	return data, nil
